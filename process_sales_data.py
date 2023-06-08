@@ -97,8 +97,8 @@ def process_sales_data(sales_csv_path, orders_dir_path):
 
         # TODO: Append a "GRAND TOTAL" row
         grand_total = order_df['TOTAL PRICE'].sum()
-        garnd_total_df = pd.DataFrame({'ITEM PRICE': ['GRAND TOTAL'], 'TOTAL PRICE': [grand_total]})
-        order_df = pd.concat([order_df, garnd_total_df])
+        grand_total_df = pd.DataFrame({'ITEM PRICE': ['GRAND TOTAL'], 'TOTAL PRICE': [grand_total]})
+        order_df = pd.concat([order_df, grand_total_df])
         
 
         # TODO: Determine the file name and full path of the Excel sheet
@@ -112,7 +112,7 @@ def process_sales_data(sales_csv_path, orders_dir_path):
         order_df.to_excel(order_exce_path, index=False, sheet_name=worksheet_name)
 
         # TODO: Format the Excel sheet
-        workbook = pd.ExcelWriter(file_path, engine='openpyxl')
+        workbook = pd.ExcelWriter(order_exce_path(), engine='openpyxl')
         worksheet = workbook.sheets['Sheet1']
 
 
@@ -120,7 +120,7 @@ def process_sales_data(sales_csv_path, orders_dir_path):
         money_format = workbook.book.add_format({'num_format': '$#,##0.00'})
 
         # TODO: Format each colunm
-        for col_num, value in enumerate(group.columns, start=1):
+        for col_num, value in enumerate(order_df.columns, start=1):
             worksheet.write(0, col_num, value)
             if 'PRICE' in value or 'TOTAL' in value:
                 worksheet.set_column(col_num, col_num, None, money_format )
@@ -130,6 +130,8 @@ def process_sales_data(sales_csv_path, orders_dir_path):
         workbook.save()
         workbook.close()
     return
+
+
 
 if __name__ == '__main__':
     main()
