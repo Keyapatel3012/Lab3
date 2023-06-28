@@ -104,27 +104,27 @@ def process_sales_data(sales_csv_path, orders_dir_path):
         # TODO: Determine the file name and full path of the Excel sheet
         customer_name = order_df['CUSTOMER NAME'].values[0]
         customer_name = re.sub(r'\W', '', customer_name)
-        
-        
+        order_file = f"order{order_id}_{customer_name}.xlsx"
+        order_exce_path = os.path.join(orders_dir_path, order_file)
 
         # TODO: Export the data to an Excel sheet
-       
-       
-
-        # TODO: Format the Excel sheet
-        writer = pd.ExcelWriter("pandas_column_formats.xlsx", engine='xlsxwriter')
-        df.to_excel(writer, sheet_name="Sheet1")
+        worksheet_name = f'order #{order_id}'
+        writer = pd.ExcelWriter(order_exce_path, engine='xlsxwriter')
+        order_df.to_excel(writer, index=False, sheet_name=worksheet_name)
         workbook = writer.book
-        worksheet = writer.sheets["Sheet1"]
+        worksheet = writer.sheets[worksheet_name]
 
 
         # TODO: Define format for the money columns
-        format1 = workbook.add_format({'num_format': "#,##0.00"})
-        format2 = workbook.add_format({'num_format': "0%"})
+        money_format = workbook.add_format({'num_format': '$#,##0.00'})
 
         # TODO: Format each colunm
-        worksheet.set_column(1, 1, 18, format1)
-        worksheet.set_column(2, 2, None, format2)
+        worksheet.set_column(0, 0, 11)
+        worksheet.set_column(1, 1, 13)
+        worksheet.set_column(2, 4, 15)
+        worksheet.set_column(5, 6, 13, money_format)
+        worksheet.set_column(7, 7, 10)
+        worksheet.set_column(8, 8, 30)
 
 
         # TODO: Close the Excelwriter 
